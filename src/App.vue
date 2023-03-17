@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import HelloWordle from './components/HelloWordle.vue'
 </script>
 
 <template>
-  <HelloWordle/>
+  <div>
+    <h1>Wordle!</h1>
+    <router-view></router-view>
+  </div>
 </template>
 
 <style scoped>

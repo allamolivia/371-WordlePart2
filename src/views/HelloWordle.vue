@@ -55,15 +55,18 @@ function double(s: string, l: string, p: number) {
 
 <template>
 
-  <p>To build the grid of letters using Vue3 we created a v-for loop that would parse through each letter 
+  <!--p>To build the grid of letters using Vue3 we created a v-for loop that would parse through each letter 
     in the array that was nested in a v-for loop that would give us the array of words. Afterwards they would 
     be checked by the v-if statements to create the background colors and cells. For our word matching algorithm, 
     we used a series of v-if-else statements to check whether the letter is a perfect match to the corresponding 
     letter in secret word so that box becomes green, then whether the letter was found anywhere in the secret 
-    word so that the box becomes yellow, and finally if none of these conditions are true the box appears gray. </p>
+    word so that the box becomes yellow, and finally if none of these conditions are true the box appears gray. </p-->
 
-  <h1>Wordle! By Olivia Allam & Jacob Strickland</h1>
-
+  <div id="routing">
+    <button id="loginbutton"><RouterLink to="/login">Login</RouterLink></button>
+    <button id="signupbutton"><RouterLink to="/signup">Sign Up</RouterLink></button>
+  </div>
+  
   <p>{{ win() }}</p>
 
   <div id="wordGrid">
@@ -125,8 +128,20 @@ function double(s: string, l: string, p: number) {
     line-height: 0em;
   }
 
-  #button1 {
+  #loginbutton {
+    width: 150px;
+  }
+
+  #signupbutton {
+    width: 150px;
     margin-left: 10px;
+  }
+
+  #routing {
+    padding-bottom: 40px;
+  }
+
+  #button1 {
     width: 150px;
     justify-items: center;
   }

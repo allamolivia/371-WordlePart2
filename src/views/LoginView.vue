@@ -4,15 +4,13 @@
     getAuth,
     Auth,
     UserCredential,
-    createUserWithEmailAndPassword,
-    sendEmailVerification,
-    signOut,
+    signInWithEmailAndPassword,
   } from "firebase/auth"
 
     const u_email = ref("")
     const u_pass = ref("")
+    const message = ref(" ")
     var auth: Auth | null = null
-    var emailVerification = false
 
     function isValidInput(): boolean {
         return u_email.value.length > 0 && u_pass.value.length > 0
@@ -22,28 +20,28 @@
       auth = getAuth();
     })
 
-    function createAccount(): void {
-      createUserWithEmailAndPassword(auth!, u_email.value, u_pass.value)
-        .then(async (cr: UserCredential) => {
-          if (emailVerification) {
-            await sendEmailVerification(cr.user);
-            await signOut(auth!);
-            console.log("An email verification has been sent to ", cr.user?.email);  
-            } else console.log("New account created with UID", cr.user?.email);
-          })
-          .catch((err: any) => {
-            console.log(`Unable to create account ${err}`); 
-          })
-          .catch((err: any) => {
-            console.error("Oops", err);
-          });
-      }
+    function withEmail(): void {
+    signInWithEmailAndPassword(auth!, u_email.value, u_pass.value)
+      .then(async (cr: UserCredential) => {
+        console.log("login successfull.")
+        message.value=("login successful!")
+      })
+      .catch((err: any) => {
+        //console.log(`Unable to login ${err}`);
+        //message.value=(`Unable to login ${err}`)
+        if (err == "FirebaseError: Firebase: Error (auth/invalid-email).") {
+          message.value="Incorrect username or password"
+        } else {
+          message.value=(`Unable to login. ${err}`)
+        }
+      });
+  }
   
   </script>
 
 <template>
   <div id="outerdiv">
-    <h2>Create Account</h2>
+    <h2>Sign In</h2>
     <div id="signupbox">
       <div class="inputdiv">
         <input v-model="u_email" type="text"
@@ -56,8 +54,9 @@
     </div>
     <div id="SignUp">
       <button :disabled="!isValidInput"
-        @click="createAccount">Sign up</button>
+        @click="withEmail">Sign in</button>
     </div>
+    <p>{{ message }}</p>
 </div>
 </template>
 
