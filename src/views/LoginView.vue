@@ -38,7 +38,7 @@ import { DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
       });
   }
 
-  const doc1: DocumentReference = doc()
+  //const doc1: DocumentReference = doc()
   
   </script>
 

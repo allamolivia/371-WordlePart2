@@ -8,6 +8,7 @@
     sendEmailVerification,
     signOut,
   } from "firebase/auth"
+  import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore } from "firebase/firestore";
 
     const u_email = ref("")
     const u_pass = ref("")
@@ -17,7 +18,7 @@
     function isValidInput(): boolean {
         return u_email.value.length > 0 && u_pass.value.length > 0
     }
-
+    
     onMounted(() => {
       auth = getAuth();
     })
@@ -25,11 +26,13 @@
     function createAccount(): void {
       createUserWithEmailAndPassword(auth!, u_email.value, u_pass.value)
         .then(async (cr: UserCredential) => {
-          if (emailVerification) {
-            await sendEmailVerification(cr.user);
-            await signOut(auth!);
-            console.log("An email verification has been sent to ", cr.user?.email);  
-            } else console.log("New account created with UID", cr.user?.email);
+          console.log("New account created with UID", cr.user?.email);
+          const doc1: DocumentReference = doc(db, 'states/AK')
+          setDoc(doc1, { name: "Alaska", capital: "Juneau"})
+            .then(() => {
+              console.log("New doc added");
+             })
+          .catch((err:any) => { /* your code here */ });
           })
           .catch((err: any) => {
             console.log(`Unable to create account ${err}`); 

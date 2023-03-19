@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import "./style.css";
 import App from "./App.vue";
-import {getFirestore, Firestore} from "firebase/firestore"
+import {getFirestore, Firestore, collection} from "firebase/firestore"
 import { getAuth } from "firebase/auth";
 
 // Import the functions you need from the SDKs you need
@@ -41,3 +41,5 @@ const myRouter = createRouter({
 const myApp: FirebaseApp = initializeApp(firebaseConfig);
 const db:Firestore = getFirestore(myApp);
 createApp(App).use(myRouter).mount("#app");
+
+const users = collection(db, "users")

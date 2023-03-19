@@ -1,16 +1,25 @@
 <script setup lang="ts">
-import { ref, Ref } from 'vue'
-
+import { ref, Ref, onMounted, defineProps, withDefaults } from 'vue'
+import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
+import { dataType } from "./dataTypes.vue"
 const gameName = ref("Wordle Clone")
 const words: Ref<string[]> = ref([ "Apple", "Bases", "Birds", "Crowd", "Crack", "Delta", "Doubt", "Dough", "Flyer", "Grand", "Giant", "Hello", "Handy",
 "Igloo", "Karat", "Kayak", "Leeds", "Leary", "Matte", "Never", "Outgo", "Plate", "Pours", "Queue", "Rowdy", "Slack", "Showy","These",
   "Utter", "Vases", "Weird", "Xenon","Yards", "Zeros" ])
 const strArray: Ref<string[]> = ref([]) 
 
+type TimerProp = {
+  updateInterval: number
+}
+
 var guessesUsed = 0
 var secret = getSecretWord()
 var guess = ""
 var randWord = ""
+
+const props = withDefaults(defineProps<TimerProp>(), {updateInterval: 1000})
+const seconds = ref(0)
+let myTimer: Ref<number | null> = ref(null)
 
 function getSecretWord() {
   return words.value[Math.floor(Math.random() * 35)].toUpperCase()
@@ -20,6 +29,9 @@ function getGuess() {
   if (guessesUsed < 6) {
     strArray.value.push(guess.toUpperCase())
     guessesUsed++
+  }
+  if (guessesUsed == 6 || guess.toUpperCase() === secret){
+    endGame()
   }
 }
 
@@ -37,6 +49,10 @@ function showSecret() {
 function win() {
   if (guess.toUpperCase() === secret) {
     return "CONGRATULATIONS! YOU WIN!"
+    if (myTimer.value != null) {
+      clearInterval(myTimer.value)
+      myTimer.value = null
+    }
   } else {
     return ""
   }
@@ -51,7 +67,54 @@ function double(s: string, l: string, p: number) {
   return 0
 }
 
+// function updateTime() {
+//   seconds.value++;
+// }
 
+// function stopTime() {
+//   clearInterval(0)
+// }
+
+// function runTimer() {
+//   myTimer.value = setInterval(updateTime, props.updateInterval)
+// }
+
+// onMounted(() => {
+//   runTimer()
+// })
+
+function winLoss() {
+  if (guess.toUpperCase() === secret) {
+    return true
+  } else {
+    return false
+  }
+}
+
+var getData: dataType[] = [
+  {
+    word: "",
+    guessedWords: [],
+    gameResult: false,
+    time: 0,
+    date: ""
+  }
+]
+
+// var getData: dataType[] = [
+//   {
+//     word: secret,
+//     guessedWords: strArray.value,
+//     gameResult: winLoss(),
+//     time: 100,
+//     date: "3/19/2023"
+//   }
+// ]
+
+function endGame() {
+  // add all statistics and push to database
+  
+}
 
 </script>
 
@@ -63,7 +126,9 @@ function double(s: string, l: string, p: number) {
     we used a series of v-if-else statements to check whether the letter is a perfect match to the corresponding 
     letter in secret word so that box becomes green, then whether the letter was found anywhere in the secret 
     word so that the box becomes yellow, and finally if none of these conditions are true the box appears gray. </p-->
-
+  <p>
+    <Timer></Timer>
+  </p>
   <div id="routing">
     <button id="loginbutton"><RouterLink to="/login">Login</RouterLink></button>
     <button id="signupbutton"><RouterLink to="/signup">Sign Up</RouterLink></button>
