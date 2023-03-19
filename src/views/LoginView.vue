@@ -6,6 +6,7 @@
     UserCredential,
     signInWithEmailAndPassword,
   } from "firebase/auth"
+import { DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
 
     const u_email = ref("")
     const u_pass = ref("")
@@ -36,6 +37,8 @@
         }
       });
   }
+
+  const doc1: DocumentReference = doc()
   
   </script>
 
