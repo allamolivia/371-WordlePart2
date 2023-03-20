@@ -74,10 +74,10 @@ function showSecret() {
 function win() {
   if (guess.toUpperCase() === secret) {
     return "CONGRATULATIONS! YOU WIN!"
-    if (myTimer.value != null) {
-      clearInterval(myTimer.value)
-      myTimer.value = null
-    }
+    // if (myTimer.value != null) {
+    //   clearInterval(myTimer.value)
+    //   myTimer.value = null
+    // }
   } else {
     return ""
   }
@@ -92,21 +92,22 @@ function double(s: string, l: string, p: number) {
   return 0
 }
 
-// function updateTime() {
-//   seconds.value++;
-// }
+function updateTime() {
+  seconds.value++;
+}
 
-// function stopTime() {
-//   clearInterval(0)
-// }
+function stopTime() {
+  clearInterval(0)
+}
 
-// function runTimer() {
-//   myTimer.value = setInterval(updateTime, props.updateInterval)
-// }
+function runTimer() {
+  setInterval(updateTime, 1000)
+  //myTimer.value = setInterval(updateTime, props.updateInterval)
+}
 
-// onMounted(() => {
-//   runTimer()
-// })
+onMounted(() => {
+  runTimer()
+})
 
 function winLoss() {
   if (guess.toUpperCase() === secret) {
@@ -125,21 +126,14 @@ var getData: dataType =
     date: ""
   }
 
-// var getData: dataType[] = [
-//   {
-//     word: secret,
-//     guessedWords: strArray.value,
-//     gameResult: winLoss(),
-//     time: 100,
-//     date: "3/19/2023"
-//   }
-// ]
+
 
 function endGame() {
   // add all statistics and push to database
   getData.word = secret
   getData.guessedWords = strArray.value
   getData.gameResult = winLoss()
+  getData.time = seconds.value
   getData.date = dateString
   let games:CollectionReference;
   games = collection(db, `users/${ auth!.currentUser!.uid }/games`);
