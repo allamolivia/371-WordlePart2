@@ -28,8 +28,7 @@ import { DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
         message.value=("login successful!")
       })
       .catch((err: any) => {
-        //console.log(`Unable to login ${err}`);
-        //message.value=(`Unable to login ${err}`)
+
         if (err == "FirebaseError: Firebase: Error (auth/invalid-email).") {
           message.value="Incorrect username or password"
         } else {
@@ -37,8 +36,6 @@ import { DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
         }
       });
   }
-
-  //const doc1: DocumentReference = doc()
   
   </script>
 

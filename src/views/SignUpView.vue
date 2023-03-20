@@ -5,11 +5,8 @@
     Auth,
     UserCredential,
     createUserWithEmailAndPassword,
-    sendEmailVerification,
-    signOut,
-    User
   } from "firebase/auth"
-  import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore, getFirestore } from "firebase/firestore";
+  import {  DocumentReference, setDoc, doc, Firestore, getFirestore } from "firebase/firestore";
 
     const u_email = ref("")
     const u_pass = ref("")

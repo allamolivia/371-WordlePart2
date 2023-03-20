@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, Ref, onMounted, defineProps, withDefaults } from 'vue'
-import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore, getFirestore } from "@firebase/firestore";
+import { addDoc,
+          collection, 
+          CollectionReference, 
+          DocumentReference, 
+          Firestore,
+          getFirestore } from "firebase/firestore";
 import {
     getAuth,
     Auth,
-    UserCredential,
-    createUserWithEmailAndPassword,
-    sendEmailVerification,
     signOut,
     User
   } from "firebase/auth"
@@ -74,10 +76,6 @@ function showSecret() {
 function win() {
   if (guess.toUpperCase() === secret) {
     return "CONGRATULATIONS! YOU WIN!"
-    // if (myTimer.value != null) {
-    //   clearInterval(myTimer.value)
-    //   myTimer.value = null
-    // }
   } else {
     return ""
   }
@@ -102,7 +100,6 @@ function stopTime() {
 
 function runTimer() {
   setInterval(updateTime, 1000)
-  //myTimer.value = setInterval(updateTime, props.updateInterval)
 }
 
 onMounted(() => {
@@ -129,7 +126,6 @@ var getData: dataType =
 
 
 function endGame() {
-  // add all statistics and push to database
   getData.word = secret
   getData.guessedWords = strArray.value
   getData.gameResult = winLoss()
@@ -137,34 +133,30 @@ function endGame() {
   getData.date = dateString
   let games:CollectionReference;
   games = collection(db, `users/${ auth!.currentUser!.uid }/games`);
-  // or michCities = collection(db, “state”, “MI”, “cities”);
   addDoc(games,
     { word: getData.word, guessedWords: getData.guessedWords, 
       gameResult: getData.gameResult, time: getData.time, date: getData.date})
     .then((grDoc: DocumentReference) => {
-    // your code here
+    // 
     console.log("game created")
     })
-    .catch((err:any) => { /* your code here */ });
+    .catch((err:any) => { /* */ });
 
 }
 
 </script>
 
 <template>
-
-  <!--p>To build the grid of letters using Vue3 we created a v-for loop that would parse through each letter 
-    in the array that was nested in a v-for loop that would give us the array of words. Afterwards they would 
-    be checked by the v-if statements to create the background colors and cells. For our word matching algorithm, 
-    we used a series of v-if-else statements to check whether the letter is a perfect match to the corresponding 
-    letter in secret word so that box becomes green, then whether the letter was found anywhere in the secret 
-    word so that the box becomes yellow, and finally if none of these conditions are true the box appears gray. </p-->
+<div v-if="auth">Signed in as {{ auth!.currentUser!.email }} 
+  <button id="signoutbutton" @click="signOut(auth!)">Sign Out</button>
+</div>
   <p>
     <Timer></Timer>
   </p>
   <div id="routing">
     <button id="loginbutton"><RouterLink to="/login">Login</RouterLink></button>
     <button id="signupbutton"><RouterLink to="/signup">Sign Up</RouterLink></button>
+    <button v-if="auth" id="statsbutton"><RouterLink to="/stats">My Games</RouterLink></button>
   </div>
   
   <p>{{ win() }}</p>
@@ -233,6 +225,16 @@ function endGame() {
   }
 
   #signupbutton {
+    width: 150px;
+    margin-left: 10px;
+  }
+
+  #statsbutton {
+    width: 150px;
+    margin-left: 10px;
+  }
+
+  #signoutbutton {
     width: 150px;
     margin-left: 10px;
   }
