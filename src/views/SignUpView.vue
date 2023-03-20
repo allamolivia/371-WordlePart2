@@ -7,13 +7,15 @@
     createUserWithEmailAndPassword,
     sendEmailVerification,
     signOut,
+    User
   } from "firebase/auth"
-  import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore } from "firebase/firestore";
+  import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore, getFirestore } from "firebase/firestore";
 
     const u_email = ref("")
     const u_pass = ref("")
     var auth: Auth | null = null
     var emailVerification = false
+    const db:Firestore = getFirestore();
 
     function isValidInput(): boolean {
         return u_email.value.length > 0 && u_pass.value.length > 0
@@ -27,8 +29,8 @@
       createUserWithEmailAndPassword(auth!, u_email.value, u_pass.value)
         .then(async (cr: UserCredential) => {
           console.log("New account created with UID", cr.user?.email);
-          const doc1: DocumentReference = doc(db, 'states/AK')
-          setDoc(doc1, { name: "Alaska", capital: "Juneau"})
+          const doc1: DocumentReference = doc(db, `users/${cr.user.uid}`);
+          setDoc(doc1, { })
             .then(() => {
               console.log("New doc added");
              })

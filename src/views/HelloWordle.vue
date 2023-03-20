@@ -1,12 +1,29 @@
 <script setup lang="ts">
 import { ref, Ref, onMounted, defineProps, withDefaults } from 'vue'
-import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
+import { addDoc, collection, CollectionReference, DocumentData, DocumentReference, setDoc, doc, Firestore, getFirestore } from "@firebase/firestore";
+import {
+    getAuth,
+    Auth,
+    UserCredential,
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    signOut,
+    User
+  } from "firebase/auth"
+
 import { dataType } from "./dataTypes.vue"
 const gameName = ref("Wordle Clone")
 const words: Ref<string[]> = ref([ "Apple", "Bases", "Birds", "Crowd", "Crack", "Delta", "Doubt", "Dough", "Flyer", "Grand", "Giant", "Hello", "Handy",
 "Igloo", "Karat", "Kayak", "Leeds", "Leary", "Matte", "Never", "Outgo", "Plate", "Pours", "Queue", "Rowdy", "Slack", "Showy","These",
   "Utter", "Vases", "Weird", "Xenon","Yards", "Zeros" ])
 const strArray: Ref<string[]> = ref([]) 
+var auth: Auth | null = null
+var user: User | null = null
+
+onMounted(() => {
+      auth = getAuth();
+      user = auth.currentUser
+    })
 
 type TimerProp = {
   updateInterval: number
@@ -16,6 +33,13 @@ var guessesUsed = 0
 var secret = getSecretWord()
 var guess = ""
 var randWord = ""
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+const db:Firestore = getFirestore();
+
+var dateString = mm + '/' + dd + '/' + yyyy;
 
 const props = withDefaults(defineProps<TimerProp>(), {updateInterval: 1000})
 const seconds = ref(0)
@@ -39,6 +63,7 @@ function newGame() {
   strArray.value.splice(0)
   guess = ""
   secret = words.value[Math.floor(Math.random() * 35)].toUpperCase()
+  guessesUsed = 0
   return secret
 }
 
@@ -91,7 +116,7 @@ function winLoss() {
   }
 }
 
-var getData: dataType[] = [
+var getData: dataType = 
   {
     word: "",
     guessedWords: [],
@@ -99,7 +124,6 @@ var getData: dataType[] = [
     time: 0,
     date: ""
   }
-]
 
 // var getData: dataType[] = [
 //   {
@@ -113,7 +137,22 @@ var getData: dataType[] = [
 
 function endGame() {
   // add all statistics and push to database
-  
+  getData.word = secret
+  getData.guessedWords = strArray.value
+  getData.gameResult = winLoss()
+  getData.date = dateString
+  let games:CollectionReference;
+  games = collection(db, `users/${ auth!.currentUser!.uid }/games`);
+  // or michCities = collection(db, “state”, “MI”, “cities”);
+  addDoc(games,
+    { word: getData.word, guessedWords: getData.guessedWords, 
+      gameResult: getData.gameResult, time: getData.time, date: getData.date})
+    .then((grDoc: DocumentReference) => {
+    // your code here
+    console.log("game created")
+    })
+    .catch((err:any) => { /* your code here */ });
+
 }
 
 </script>
