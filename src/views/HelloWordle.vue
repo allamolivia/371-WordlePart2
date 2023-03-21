@@ -19,12 +19,12 @@ const words: Ref<string[]> = ref([ "Apple", "Bases", "Birds", "Crowd", "Crack", 
 "Igloo", "Karat", "Kayak", "Leeds", "Leary", "Matte", "Never", "Outgo", "Plate", "Pours", "Queue", "Rowdy", "Slack", "Showy","These",
   "Utter", "Vases", "Weird", "Xenon","Yards", "Zeros" ])
 const strArray: Ref<string[]> = ref([]) 
-var auth: Auth | null = null
+var auth: Ref<Auth | null> = ref(null)
 var user: User | null = null
 
 onMounted(() => {
-      auth = getAuth();
-      user = auth.currentUser
+      auth.value = getAuth();
+      user = auth.value.currentUser
     })
 
 type TimerProp = {
@@ -135,7 +135,7 @@ function endGame() {
   getData.time = seconds.value
   getData.date = dateString
   let games:CollectionReference;
-  games = collection(db, `users/${ auth!.currentUser!.uid }/games`);
+  games = collection(db, `users/${ auth.value!.currentUser!.uid }/games`);
   addDoc(games,
     { word: getData.word, guessedWords: getData.guessedWords, 
       gameResult: getData.gameResult, time: getData.time, date: getData.date})
