@@ -5,6 +5,7 @@
     Auth,
     UserCredential,
     signInWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup
   } from "firebase/auth"
 import { DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
 
@@ -37,6 +38,16 @@ import { DocumentReference, setDoc, doc, Firestore } from "@firebase/firestore";
       });
   }
   
+  const auth1 = getAuth();
+  const provider = new GoogleAuthProvider();
+
+  signInWithPopup(auth1, provider)
+    .then((cred:UserCredential) => {
+      console.log("Signed in as", cred.user?.email);
+    })
+    .catch((err: any) => {
+      console.error("Oops", err);
+    });
   </script>
 
 <template>
