@@ -76,6 +76,10 @@ function showSecret() {
 function win() {
   if (guess.toUpperCase() === secret) {
     return "CONGRATULATIONS! YOU WIN!"
+    // if (myTimer.value != null) {
+    //   clearInterval(myTimer.value)
+    //   myTimer.value = null
+    // }
   } else {
     return ""
   }
@@ -100,6 +104,7 @@ function stopTime() {
 
 function runTimer() {
   setInterval(updateTime, 1000)
+  //myTimer.value = setInterval(updateTime, props.updateInterval)
 }
 
 onMounted(() => {
@@ -122,8 +127,6 @@ var getData: dataType =
     time: 0,
     date: ""
   }
-
-
 
 function endGame() {
   getData.word = secret
